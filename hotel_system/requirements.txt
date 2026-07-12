@@ -1,0 +1,5 @@
+django==6.0.7
+mysqlclient==2.2.8
+xhtml2pdf==0.2.17
+matplotlib==3.11.0
+python-dotenv==1.2.2

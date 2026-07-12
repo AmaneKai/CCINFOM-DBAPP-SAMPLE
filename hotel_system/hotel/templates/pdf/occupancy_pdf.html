@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta charset="UTF-8">
+{% include "pdf/_report_styles.html" %}
+</head>
+<body>
+  <div class="header">
+    <div class="company">Hotel Management System</div>
+    <div class="subtitle">Occupancy Report - {{ year }}</div>
+    <div class="meta">Generated on {{ generated_on }}</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="kpi-label">Average occupancy</div>
+      <div class="kpi-value">{{ avg_occupancy }}%</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Peak month</div>
+      <div class="kpi-value">{{ peak_month }} ({{ peak_rate }}%)</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Total rooms</div>
+      <div class="kpi-value">{{ total_rooms }}</div>
+    </div>
+  </div>
+
+  <div class="chart-block">
+    <img src="data:image/png;base64,{{ chart_img }}">
+  </div>
+
+  <table>
+    <tr><th>Month</th><th>Occupancy rate</th><th>Bookings</th></tr>
+    {% for row in monthly_data %}
+    <tr><td>{{ row.month }}</td><td>{{ row.rate }}%</td><td>{{ row.bookings }}</td></tr>
+    {% endfor %}
+  </table>
+
+  <div class="footer">Hotel Management System — Confidential internal report</div>
+</body>
+</html>

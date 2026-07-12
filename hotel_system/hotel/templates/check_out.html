@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load hotel_extras %}
+{% block content %}
+<h2>Check out booking #{{ booking.booking_id }}</h2>
+<p>Guest: {{ booking.guest }}</p>
+<p>Room: {{ booking.room }} ({{ nights }} nights)</p>
+<p>Total: {{ total|peso }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-warning">Confirm check-out</button>
+</form>
+{% endblock %}

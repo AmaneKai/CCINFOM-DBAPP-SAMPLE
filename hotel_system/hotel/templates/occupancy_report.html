@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="page-title mb-0">Occupancy Analytics {{ year }}</div>
+  <div class="d-flex gap-2 align-items-center">
+    <form method="get" class="mb-0">
+      <select name="year" class="form-select" onchange="this.form.submit()">
+        {% for candidate_year in available_years %}
+          <option value="{{ candidate_year }}" {% if year == candidate_year %}selected{% endif %}>
+            {{ candidate_year }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+    <a href="{% url 'occupancy_report_pdf' %}?year={{ year }}" class="btn-export">Download PDF</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">Average occupancy ({{ year }})</div>
+      <div class="kpi-value">{{ avg_occupancy }}%</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">Peak month</div>
+      <div class="kpi-value">{{ peak_month }}</div>
+      <div class="kpi-sub">{{ peak_rate }}% occupancy</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="kpi-card">
+      <div class="kpi-label">Total bookings ({{ year }})</div>
+      <div class="kpi-value">{{ total_bookings_year }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel mb-4">
+  <h5>Monthly occupancy trend</h5>
+  <canvas id="occChart" height="70"></canvas>
+</div>
+
+<div class="panel">
+  <h5>Monthly breakdown</h5>
+  <table class="table">
+    <thead>
+      <tr><th>Month</th><th>Occupancy rate</th><th>Bookings</th><th>MoM change</th></tr>
+    </thead>
+    <tbody>
+      {% for row in monthly_data %}
+      <tr>
+        <td>{{ row.month }}</td>
+        <td>{{ row.rate }}%</td>
+        <td>{{ row.bookings }}</td>
+        <td>
+          {% if row.mom_change != None %}
+            <span class="{% if row.mom_change >= 0 %}trend-up{% else %}trend-down{% endif %}">
+              {% if row.mom_change >= 0 %}▲{% else %}▼{% endif %} {{ row.mom_change }} pts
+            </span>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/trend-chart.js' %}"></script>
+<script>
+renderTrendChart({
+  elementId: 'occChart',
+  labels: {{ chart_labels|safe }},
+  data: {{ chart_data|safe }},
+  label: 'Occupancy rate (%)',
+  borderColor: '{{ chart_border_color }}',
+  backgroundColor: '{{ chart_fill_color }}',
+  maxValue: 100,
+  valueFormatter: value => value + '%',
+})
+</script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load hotel_extras %}
+{% block content %}
+<div class="page-title">Dashboard</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-label">Occupancy rate</div>
+      <div class="kpi-value">{{ occupancy_rate }}%</div>
+      <div class="kpi-sub">{{ occupied_now }} / {{ total_rooms }} rooms occupied</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-label">Revenue (MTD)</div>
+      <div class="kpi-value">{{ mtd_revenue|peso }}</div>
+      <div class="kpi-sub">{{ mtd_bookings }} bookings this month</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-label">Avg. stay length</div>
+      <div class="kpi-value">{{ avg_stay }}</div>
+      <div class="kpi-sub">nights</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="kpi-card">
+      <div class="kpi-label">Available rooms</div>
+      <div class="kpi-value">{{ available_rooms }}</div>
+      <div class="kpi-sub">ready to book</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <h5>Recent bookings</h5>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th><th>Guest</th><th>Room</th>
+        <th>Check-in</th><th>Check-out</th><th>Status</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for booking in bookings %}
+      <tr>
+        <td>#{{ booking.booking_id }}</td>
+        <td>{{ booking.guest }}</td>
+        <td>{{ booking.room }}</td>
+        <td>{{ booking.check_in_date }}</td>
+        <td>{{ booking.check_out_date }}</td>
+        <td><span class="badge-status badge-{{ booking.status }}">{{ booking.status }}</span></td>
+        <td>
+          {% if booking.status == 'reserved' %}
+            <a href="{% url 'check_in' booking.booking_id %}" class="btn btn-sm btn-success">
+              Check in
+            </a>
+          {% elif booking.status == 'checked-in' %}
+            <a href="{% url 'check_out' booking.booking_id %}" class="btn btn-sm btn-warning">
+              Check out
+            </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

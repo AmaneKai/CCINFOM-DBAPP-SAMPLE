@@ -1,0 +1,42 @@
+{% load hotel_extras %}
+<html>
+<head>
+<meta charset="UTF-8">
+{% include "pdf/_report_styles.html" %}
+</head>
+<body>
+  <div class="header">
+    <div class="company">Hotel Management System</div>
+    <div class="subtitle">Revenue Report - {{ year }}</div>
+    <div class="meta">Generated on {{ generated_on }}</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="kpi-label">Total revenue</div>
+      <div class="kpi-value">{{ total_revenue|php }}</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Avg. monthly revenue</div>
+      <div class="kpi-value">{{ avg_monthly|php }}</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Best month</div>
+      <div class="kpi-value">{{ best_month.month }}</div>
+    </div>
+  </div>
+
+  <div class="chart-block">
+    <img src="data:image/png;base64,{{ chart_img }}">
+  </div>
+
+  <table>
+    <tr><th>Month</th><th>Revenue</th><th>Bookings</th></tr>
+    {% for row in monthly_data %}
+    <tr><td>{{ row.month }}</td><td>{{ row.revenue|php }}</td><td>{{ row.bookings }}</td></tr>
+    {% endfor %}
+  </table>
+
+  <div class="footer">Hotel Management System — Confidential internal report</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>New booking</h2>
+{% if form.non_field_errors %}
+  <div class="alert alert-danger">{{ form.non_field_errors|join:" " }}</div>
+{% endif %}
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label>Guest</label>
+    {{ form.guest }}
+  </div>
+  <div class="mb-3">
+    <label>Room</label>
+    {{ form.room }}
+    {% include "_field_errors.html" with field=form.room %}
+  </div>
+  <div class="mb-3">
+    <label>Staff</label>
+    {{ form.staff }}
+  </div>
+  <div class="mb-3">
+    <label>Check-in date</label>
+    {{ form.check_in_date }}
+  </div>
+  <div class="mb-3">
+    <label>Check-out date</label>
+    {{ form.check_out_date }}
+    {% include "_field_errors.html" with field=form.check_out_date %}
+  </div>
+  <button class="btn btn-primary">Create booking</button>
+</form>
+{% endblock %}
